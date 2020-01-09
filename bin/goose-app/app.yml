@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goose-app-server
+  labels:
+    app: goose-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goose-app
+  template:
+    metadata:
+      labels:
+        app: goose-app
+    spec:
+      containers:
+      - name: goose-app-server
+        image: gooseregistry.azurecr.io/goose-app:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goose-app-service
+  labels:
+    app: goose-app
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30000
+    name: http
+  selector:
+    app: goose-app
